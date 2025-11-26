@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Avatar 3D Ready Player Me</title>
+  <script src="https://cdn.jsdelivr.net/npm/@readyplayerme/webview@1"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+
+</head>
+<body>
+
+<iframe id="rpmFrame"
+        allow="camera *; microphone *"
+        src="https://models.readyplayer.me/6923e3531aa3af821a7cf0bd.glb"
+></iframe>
+
+<script>
+
+  // Cargar API
+  const frame = document.getElementById("rpmFrame");
+
+  window.speakText = async function(text) {
+
+    // Crear audio TTS usando SpeechSynthesis (navegador)
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "es-MX";
+
+    // Mover boca según el audio (esto ya lo maneja Ready Player Me)
+    utter.onstart = () => {
+      frame.contentWindow.postMessage(
+        { target: "avatar", type: "anim_trigger", triggerName: "talk" },
+        "*"
+      );
+    };
+
+    utter.onend = () => {
+      frame.contentWindow.postMessage(
+        { target: "avatar", type: "anim_trigger", triggerName: "idle" },
+        "*"
+      );
+    };
+
+    speechSynthesis.speak(utter);
+  };
+
+</script>
+
+</body>
+</html>

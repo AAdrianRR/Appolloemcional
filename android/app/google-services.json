@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "288025315207",
+    "project_id": "apoyo-emocional-ia-app",
+    "storage_bucket": "apoyo-emocional-ia-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288025315207:android:3b87a10b899513e085b522",
+        "android_client_info": {
+          "package_name": "com.example.apoyo_emocional_ia_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUIrGdY0SNfc2L1KV_7KSwXJjPhI6qQ1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

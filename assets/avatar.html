@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Avatar 3D Ready Player Me</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<iframe id="rpmFrame"
+        allow="camera *; microphone *"
+        src="https://demo.readyplayer.me/avatar?frameApi&clearCache&embed"
+></iframe>
+
+<script>
+    // Referencia al iframe del avatar
+    const frame = document.getElementById("rpmFrame");
+
+    /**
+     * Función llamada desde Flutter para hacer que el avatar hable.
+     * @param {string} text - El texto de respuesta de la IA.
+     */
+    window.speakText = async function(text) {
+
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "es-MX"; // Idioma español
+
+        // Inicia la animación de 'hablar' cuando comienza la síntesis de voz
+        utter.onstart = () => {
+            frame.contentWindow.postMessage(
+                { target: "avatar", type: "anim_trigger", triggerName: "talk" },
+                "*"
+            );
+        };
+
+        // Vuelve a la animación 'idle' (inactivo) cuando termina de hablar
+        utter.onend = () => {
+            frame.contentWindow.postMessage(
+                { target: "avatar", type: "anim_trigger", triggerName: "idle" },
+                "*"
+            );
+        };
+
+        // Inicia la reproducción de voz
+        speechSynthesis.speak(utter);
+    };
+</script>
+
+</body>
+</html>

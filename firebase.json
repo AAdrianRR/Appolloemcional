@@ -1,0 +1,42 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "apoyo-emocional-ia-app",
+          "appId": "1:288025315207:android:3b87a10b899513e085b522",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "apoyo-emocional-ia-app",
+          "configurations": {
+            "android": "1:288025315207:android:3b87a10b899513e085b522",
+            "ios": "1:288025315207:ios:023642d51c82973185b522",
+            "macos": "1:288025315207:ios:023642d51c82973185b522",
+            "web": "1:288025315207:web:39c5335af36e26b285b522",
+            "windows": "1:288025315207:web:4d7104cd2c1ced1a85b522"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        
+      ]
+    }
+  ]
+}
