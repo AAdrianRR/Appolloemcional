@@ -68,7 +68,7 @@ class TypingIndicator extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('ApoIA está escribiendo',
+          const Text('Gaibu está escribiendo',
               style: TextStyle(
                   color: AppTheme.mutedForeground,
                   fontStyle: FontStyle.italic)),

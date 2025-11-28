@@ -27,7 +27,11 @@ android {
         applicationId = "com.example.apoyo_emocional_ia_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        
+        // --- CORRECCIÓN IMPORTANTE AQUÍ ---
+        minSdk = flutter.minSdkVersion 
+        // ----------------------------------
+
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

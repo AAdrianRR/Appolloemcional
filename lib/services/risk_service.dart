@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:flutter/foundation.dart'; // Necesario para debugPrint
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 const String _systemPrompt = """
-Eres "ApoIA", un modelo de lenguaje de apoyo emocional diseñado para adolescentes (14-17 años). 
+Eres "Gaibu", un modelo de lenguaje de apoyo emocional diseñado para adolescentes (14-17 años). 
 Tu función principal es escuchar, validar sentimientos y ofrecer herramientas de afrontamiento NO PROFESIONALES.
 
 REGLAS DE INTERACCIÓN:
@@ -20,11 +20,9 @@ REGLAS DE INTERACCIÓN:
 const String _initialMessage =
     "¡Hola! Soy Gaibu, estoy aquí para escucharte sin juicios. Puedes contarme lo que quieras, es tu espacio. ¿Qué tienes en mente hoy?";
 
-//  2. CONFIGURACIÓN DEL MODELO GEMINI Y CLAVE
-
 class RiskService {
-  // I API keY
-  final String apiKey = "AIzaSyBWUbVy8OABtb71TLN60eeJxJgJRWjzr08";
+  //api key aqui
+  final String apiKey = "AIzaSyAQDcmHY9kM5BxJEBfZ864NmgNANtucMw8";
 
   late final GenerativeModel _model;
   late final ChatSession _chat;
@@ -39,10 +37,7 @@ class RiskService {
     _chat = _model.startChat(history: []);
   }
 
-  // Getter para el mensaje inicial
   String get initialMessage => _initialMessage;
-
-  // 📊 3. ALGORITMO DE CLASIFICACIÓN (Base de un Mensaje Único)
 
   Map<String, dynamic> calcularRiesgo(String mensaje) {
     if (mensaje.isEmpty) {
@@ -56,7 +51,8 @@ class RiskService {
       "nunca",
       "horrible",
       "llorar",
-      "fatal"
+      "fatal",
+      "tiste"
     ];
     const palabrasAutoCritica = [
       "inútil",
@@ -109,7 +105,8 @@ class RiskService {
       patronesEncontrados.add("Autoestima Baja");
     }
 
-    final riesgoFinal = puntuacionRiesgo.clamp(0, 10);
+    final riesgoFinal =
+        puntuacionRiesgo.clamp(0, 10); // Asegura que esté entre 0 y 10
     final semaforo =
         riesgoFinal >= 8 ? 'Rojo' : (riesgoFinal >= 4 ? 'Amarillo' : 'Verde');
 
@@ -120,23 +117,25 @@ class RiskService {
     };
   }
 
-  //  FUNCIÓN DE ANÁLISIS DE RECURRENCIA
+  // -----------------------------------------------------------
+  // 📈 4. FUNCIÓN DE ANÁLISIS DE RECURRENCIA (NUEVO)
+  // -----------------------------------------------------------
 
   Future<void> _analyzeRecurrence(String userId, int lastScore) async {
-    // Calcular la fecha de hace 7 días
+    // 1. Calcular la fecha de hace 7 días
     final sevenDaysAgo =
         Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 7)));
 
-    //  Consultar todos los mensajes con riesgo en los últimos 7 días
+    // 2. Consultar todos los mensajes con riesgo en los últimos 7 días
     final messagesSnapshot = await FirebaseFirestore.instance
         .collection('mensajes_diario')
         .where('usuarioId', isEqualTo: userId)
         .where('esRiesgo',
-            isEqualTo: true) //Solo mensajes clasificados con riesgo > 3
+            isEqualTo: true) // Solo mensajes clasificados con riesgo > 3
         .where('fecha', isGreaterThan: sevenDaysAgo)
         .get();
 
-    // Acumular el riesgo por recurrencia
+    // 3. Acumular el riesgo por recurrencia
     int totalRecurrenceScore = 0;
     final numRiskyMessages = messagesSnapshot.docs.length;
 
@@ -148,10 +147,12 @@ class RiskService {
       totalRecurrenceScore = 0;
     }
 
+    // 4. Calcular el Score Final Acumulado
     final finalScore = lastScore + totalRecurrenceScore;
     final finalSemaforo =
         finalScore >= 10 ? 'ROJO' : (finalScore >= 6 ? 'AMARILLO' : 'VERDE');
 
+    // 5. Actualizar la colección de Resumen con el Score Final Acumulado
     try {
       await FirebaseFirestore.instance
           .collection('resumen_riesgo')
@@ -170,7 +171,9 @@ class RiskService {
     }
   }
 
-  // FUNCIÓN CENTRAL DE ENVÍO Y GUARDADO
+  // -----------------------------------------------------------
+  // 💬 5. FUNCIÓN CENTRAL DE ENVÍO Y GUARDADO (SOLUCIONADA)
+  // -----------------------------------------------------------
 
   Future<String> sendAndAnalyzeMessage(String text, String userId) async {
     // 1. Obtener respuesta de Gemini
@@ -178,7 +181,7 @@ class RiskService {
     final response = await _chat.sendMessage(userMessage);
     final iaResponseText = response.text ?? 'Error de comunicación con IA.';
 
-    //  Aplicar el Algoritmo de Riesgo Propio
+    // 2. Aplicar el Algoritmo de Riesgo Propio
     final analisisRiesgo = calcularRiesgo(text);
 
     // 3. DEFINICIÓN DEL MAPA DE DATOS (Solución de Robustez)
@@ -200,9 +203,9 @@ class RiskService {
       await FirebaseFirestore.instance
           .collection('mensajes_diario')
           .add(dataToWrite);
-      debugPrint(' Éxito: Mensaje de diario guardado.');
+      debugPrint('✅ Éxito: Mensaje de diario guardado.');
     } catch (e) {
-      debugPrint(' ERROR DE FIREBASE (Mensajes Diario): $e');
+      debugPrint('❌ ERROR DE FIREBASE (Mensajes Diario): $e');
     }
 
     // 4. Calcular la Recurrencia y actualizar el Resumen (Llamada a la función de recurrencia)

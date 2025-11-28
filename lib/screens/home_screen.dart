@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../services/risk_service.dart';
-import '../theme/app_theme.dart'; // Importar AppTheme para colores base
-import '../theme/chat_theme.dart'; // ⬅️ IMPORTAR NUEVO TEMA DE CHAT
+import '../theme/app_theme.dart';
+import '../theme/chat_theme.dart';
 import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Content> _history = [];
   bool _isLoading = false;
 
-  // 🎤 Servicio de Voz (Solo TTS)
   final FlutterTts _flutterTts = FlutterTts();
 
   @override
@@ -39,14 +38,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Lógica de Inicialización de TTS
   void _initTts() async {
     await _flutterTts.setLanguage("es-ES");
     await _flutterTts.setSpeechRate(0.5);
     setState(() {});
   }
 
-  // Función TTS para hablar un texto
   Future<void> _speak(String text) async {
     await _flutterTts.stop();
     await _flutterTts.speak(text);

@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../services/social_service.dart';
-// ⚠️ Importaciones CRÍTICAS para el diseño
+
 import '../theme/app_theme.dart';
-import '../theme/social_theme.dart'; // ⬅️ Tema Social Único
+import '../theme/social_theme.dart';
 
 class SocialChatScreen extends StatefulWidget {
   const SocialChatScreen({super.key});
@@ -49,7 +49,6 @@ class _SocialChatScreenState extends State<SocialChatScreen> {
     );
   }
 
-  // Widget auxiliar para la burbuja de chat anónimo
   Widget _buildMessageBubble(DocumentSnapshot document, String currentUserId) {
     final data = document.data()! as Map<String, dynamic>;
     final isCurrentUser = data['senderId'] == currentUserId;
@@ -57,7 +56,6 @@ class _SocialChatScreenState extends State<SocialChatScreen> {
     final message = data['message'] as String? ?? '';
     final timestamp = data['timestamp'] as Timestamp?;
 
-    // ⚠️ Colores ajustados al SocialTheme
     final bubbleColor = isCurrentUser ? SocialTheme.accent : SocialTheme.muted;
     final textColor = isCurrentUser ? Colors.white : SocialTheme.primary;
     final aliasColor =
@@ -72,7 +70,7 @@ class _SocialChatScreenState extends State<SocialChatScreen> {
           maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
         decoration: BoxDecoration(
-          color: bubbleColor.withOpacity(1.0), // Opacidad sólida
+          color: bubbleColor.withOpacity(1.0),
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(15),
             topRight: const Radius.circular(15),
@@ -148,8 +146,7 @@ class _SocialChatScreenState extends State<SocialChatScreen> {
           Container(
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
-              color:
-                  AppTheme.card, // Usamos el card base para el fondo del input
+              color: AppTheme.card,
               border: Border(top: BorderSide(color: AppTheme.border)),
             ),
             child: Row(

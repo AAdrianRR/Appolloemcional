@@ -38,7 +38,7 @@ class _CrisisScreenState extends State<CrisisScreen>
 
   //  LLAMAR AL 911
   Future<void> _callEmergency() async {
-    final uri = Uri.parse('linea amarilla sin costo tel:911');
+    final uri = Uri.parse('tel:911');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
@@ -50,9 +50,7 @@ class _CrisisScreenState extends State<CrisisScreen>
     }
   }
 
-  // LÍNEA DE PREVENCIÓN DEL SUICIDIO (México)
   Future<void> _callPreventionLine() async {
-    // En México: SAPTEL 55 5259-8121
     final uri = Uri.parse('tel:5552598121');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
@@ -98,6 +96,7 @@ class _CrisisScreenState extends State<CrisisScreen>
                 padding: EdgeInsets.all(20 * s),
                 child: Column(
                   children: [
+                    // Botón cerrar
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -137,7 +136,6 @@ class _CrisisScreenState extends State<CrisisScreen>
 
                     SizedBox(height: 30 * s),
 
-                    //mensaje
                     FadeInDown(
                       delay: const Duration(milliseconds: 200),
                       child: Text(
@@ -169,7 +167,6 @@ class _CrisisScreenState extends State<CrisisScreen>
 
                     SizedBox(height: 50 * s),
 
-                    // BOTÓN SOS PRINCIPAL
                     ZoomIn(
                       delay: const Duration(milliseconds: 600),
                       child: GestureDetector(
@@ -206,7 +203,6 @@ class _CrisisScreenState extends State<CrisisScreen>
                                         ),
                                       ),
                                     ),
-                                    // Lottie SOS
                                     Lottie.network(
                                       'https://lottie.host/d9c7d4e5-4c44-4c8e-9a2e-8e5c5c5c5c5c/x8ZpqY8vQK.json',
                                       width: 200 * s,
@@ -217,7 +213,6 @@ class _CrisisScreenState extends State<CrisisScreen>
                                             size: 120 * s, color: Colors.white);
                                       },
                                     ),
-                                    // Texto SOS
                                     Positioned(
                                       bottom: 40 * s,
                                       child: Text(
@@ -250,7 +245,7 @@ class _CrisisScreenState extends State<CrisisScreen>
                     FadeInUp(
                       delay: const Duration(milliseconds: 800),
                       child: Text(
-                        'Presiona para llamar al 911',
+                        'Presiona para llamar al linea amarilla no tiene costo alguno y puede salvar tu vida.',
                         style: TextStyle(
                           fontSize: 16 * s,
                           color: Colors.white70,
@@ -261,7 +256,6 @@ class _CrisisScreenState extends State<CrisisScreen>
 
                     SizedBox(height: 50 * s),
 
-                    // Recursos adicionales
                     FadeInUp(
                       delay: const Duration(milliseconds: 1000),
                       child: Text(

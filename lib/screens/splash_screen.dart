@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:lottie/lottie.dart';
-import 'main_dashboard_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../widgets/gradient_scaffold.dart';
 import '../theme/app_theme.dart';
+
+import 'auth_screen.dart';
+import 'main_dashboard_screen.dart';
+import 'therapist_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,17 +22,57 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    _checkAuthAndNavigate();
   }
 
-  void _startTimer() {
-    Timer(const Duration(seconds: 3), () {
-      if (mounted) {
+  Future<void> _checkAuthAndNavigate() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (ctx) => const AuthScreen()),
+      );
+    } else {
+      try {
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          final String role = userDoc.data()?['role'] ?? 'paciente';
+
+          if (!mounted) return;
+
+          if (role == 'terapeuta') {
+            // ---> ES TERAPEUTA
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (ctx) => const TherapistHomeScreen()),
+            );
+          } else {
+            // ---> ES PACIENTE
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (ctx) => const MainDashboardScreen()),
+            );
+          }
+        } else {
+          if (!mounted) return;
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (ctx) => const MainDashboardScreen()),
+          );
+        }
+      } catch (e) {
+        print("Error en Splash: $e");
+        if (!mounted) return;
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const MainDashboardScreen()),
+          MaterialPageRoute(builder: (ctx) => const AuthScreen()),
         );
       }
-    });
+    }
   }
 
   @override

@@ -1,14 +1,16 @@
-// lib/screens/app_drawer.dart
-
 import 'package:apoyo_emocional_ia_app/screens/mental_health_centers_screen.dart';
+import 'package:apoyo_emocional_ia_app/screens/privacy_policy_screen.dart';
 import 'package:apoyo_emocional_ia_app/screens/profile_screen.dart';
 import 'package:apoyo_emocional_ia_app/screens/recovery_plan_screen.dart';
+import 'package:apoyo_emocional_ia_app/screens/rewards_screen.dart';
+import 'package:apoyo_emocional_ia_app/screens/social_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:animate_do/animate_do.dart';
 import 'dart:ui';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
+import 'auth_screen.dart'; // <--- IMPORTANTE: Importamos la pantalla de Login
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -19,7 +21,7 @@ class AppDrawer extends StatelessWidget {
     return width / 390; // Base: iPhone 12
   }
 
-//cierre del darawer y navegacion
+  // Cierre del drawer y navegación
   void _navigateTo(BuildContext context, Widget screen) {
     Navigator.of(context).pop();
     Navigator.of(context).push(
@@ -32,7 +34,6 @@ class AppDrawer extends StatelessWidget {
     final s = scale(context);
 
     return Drawer(
-      // ✅ Fondo transparente para que se vea el degradado
       backgroundColor: Colors.transparent,
       child: Container(
         decoration: const BoxDecoration(
@@ -113,20 +114,21 @@ class AppDrawer extends StatelessWidget {
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: 16 * s),
                   children: [
-                    // 1. Diario
+                    // 1. Conexión anónima
                     FadeInLeft(
                       delay: const Duration(milliseconds: 100),
                       child: _buildDrawerItem(
                         context,
                         icon: Icons.edit_outlined,
-                        title: 'Mi Diario de Conversación',
+                        title: 'Conexion anonima',
                         color: const Color(0xFF00C6FF),
-                        onTap: () => _navigateTo(context, const HomeScreen()),
+                        onTap: () =>
+                            _navigateTo(context, const SocialChatScreen()),
                       ),
                     ),
                     SizedBox(height: 10 * s),
 
-                    // 2. Terapias y Recursos
+                    // 2. Plan de Mejoría
                     FadeInLeft(
                       delay: const Duration(milliseconds: 200),
                       child: _buildDrawerItem(
@@ -140,6 +142,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     SizedBox(height: 10 * s),
 
+                    // 3. Perfil
                     FadeInLeft(
                       delay: const Duration(milliseconds: 300),
                       child: _buildDrawerItem(
@@ -153,6 +156,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     SizedBox(height: 10 * s),
 
+                    // 4. Centros de ayuda
                     FadeInLeft(
                       delay: const Duration(milliseconds: 400),
                       child: _buildDrawerItem(
@@ -167,6 +171,34 @@ class AppDrawer extends StatelessWidget {
 
                     SizedBox(height: 30 * s),
 
+                    // 5. Privacidad
+                    FadeInLeft(
+                      delay: const Duration(milliseconds: 500),
+                      child: _buildDrawerItem(
+                        context,
+                        icon: Icons.shield_outlined,
+                        title: 'Privacidad y Seguridad',
+                        color: const Color.fromARGB(255, 135, 203, 138),
+                        onTap: () =>
+                            _navigateTo(context, const PrivacyPolicyScreen()),
+                      ),
+                    ),
+                    SizedBox(height: 30 * s),
+
+                    // 6. Jardín de Logros
+                    FadeInLeft(
+                      delay: const Duration(milliseconds: 500),
+                      child: _buildDrawerItem(
+                        context,
+                        icon: Icons.emoji_events,
+                        title: 'Jardin de logros',
+                        color: const Color.fromARGB(255, 5, 185, 14),
+                        onTap: () =>
+                            _navigateTo(context, const RewardsScreen()),
+                      ),
+                    ),
+                    SizedBox(height: 30 * s),
+
                     //  Cerrar Sesión
                     FadeInLeft(
                       delay: const Duration(milliseconds: 500),
@@ -176,8 +208,10 @@ class AppDrawer extends StatelessWidget {
                         title: 'Cerrar Sesión',
                         color: Colors.red.shade400,
                         onTap: () async {
-                          Navigator.of(context).pop();
+                          Navigator.of(context)
+                              .pop(); // Cierra el drawer primero
 
+                          // Muestra el diálogo de confirmación
                           final shouldLogout = await showDialog<bool>(
                             context: context,
                             builder: (ctx) => AlertDialog(
@@ -200,9 +234,18 @@ class AppDrawer extends StatelessWidget {
                             ),
                           );
 
-                          //  Si confirma, cerrar sesión
+                          // LOGICA DE CIERRE DE SESIÓN REAL
                           if (shouldLogout == true) {
                             await FirebaseAuth.instance.signOut();
+                            // Verifica que el contexto siga montado antes de navegar
+                            if (context.mounted) {
+                              // Navega al Login y borra toda la pila anterior
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => const AuthScreen()),
+                                (route) => false,
+                              );
+                            }
                           }
                         },
                         isDestructive: true,
@@ -231,7 +274,6 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  // ✅ WIDGET AUXILIAR: Item del drawer con glasmorfismo (ADAPTATIVO)
   Widget _buildDrawerItem(
     BuildContext context, {
     required IconData icon,

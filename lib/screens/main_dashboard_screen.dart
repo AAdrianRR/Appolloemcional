@@ -23,6 +23,7 @@ class MainDashboardScreen extends StatelessWidget {
     return width / 390; // 390 = iPhone 12 base
   }
 
+  // --- WIDGET CORREGIDO: CALENDARIO DE RACHAS ADAPTATIVO ---
   Widget _buildDailyStreakCard(BuildContext context) {
     final s = scale(context);
 
@@ -45,57 +46,71 @@ class MainDashboardScreen extends StatelessWidget {
           Text('Mantén tu racha activa',
               style: AppTheme.caption.copyWith(fontSize: 13 * s)),
           SizedBox(height: 20 * s),
+
+          // Fila principal: Calendario + Insignia de Fuego
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // 1. CALENDARIO (Usa Expanded para ocupar el espacio sobrante)
               Expanded(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(7, (index) {
                     final isActive = activeDays[index];
-                    return Column(
-                      mainAxisSize: MainAxisSize.min, // ✅ Ajustar al contenido
-                      children: [
-                        Container(
-                          width: 36 * s, // ✅ Reducido
-                          height: 36 * s, // ✅ Reducido
-                          decoration: BoxDecoration(
-                            gradient: isActive ? AppTheme.cyanGradient : null,
-                            color: isActive ? null : inactiveColor,
-                            borderRadius:
-                                BorderRadius.circular(AppTheme.radiusLg * s),
-                          ),
-                          child: Center(
-                            child: Text(
-                              days[index],
-                              style: TextStyle(
-                                color: isActive
-                                    ? Colors.white
-                                    : AppTheme.mutedForeground,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14 * s,
+
+                    // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+                    // Usamos Expanded en cada hijo para dividir el ancho en 7 partes iguales
+                    return Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Círculo del día
+                          Container(
+                            width: 32 *
+                                s, // Tamaño ajustado para pantallas pequeñas
+                            height: 32 * s,
+                            decoration: BoxDecoration(
+                              gradient: isActive ? AppTheme.cyanGradient : null,
+                              color: isActive ? null : inactiveColor,
+                              borderRadius:
+                                  BorderRadius.circular(AppTheme.radiusLg * s),
+                            ),
+                            child: Center(
+                              child: Text(
+                                days[index],
+                                style: TextStyle(
+                                  color: isActive
+                                      ? Colors.white
+                                      : AppTheme.mutedForeground,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      12 * s, // Fuente un poco más pequeña
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 6 * s),
-                        Container(
-                          width: 5 * s,
-                          height: 5 * s,
-                          decoration: BoxDecoration(
-                            color: isActive ? activeColor : inactiveColor,
-                            shape: BoxShape.circle,
+                          SizedBox(height: 6 * s),
+                          // Puntito indicador
+                          Container(
+                            width: 4 * s,
+                            height: 4 * s,
+                            decoration: BoxDecoration(
+                              color: isActive ? activeColor : inactiveColor,
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   }),
                 ),
               ),
-              SizedBox(width: 8 * s),
+
+              SizedBox(width: 8 * s), // Espacio entre calendario y fuego
+
+              // 2. INSIGNIA DE FUEGO (Tamaño fijo a la derecha)
               Container(
                 padding:
-                    EdgeInsets.symmetric(horizontal: 8 * s, vertical: 4 * s),
+                    EdgeInsets.symmetric(horizontal: 10 * s, vertical: 6 * s),
                 decoration: BoxDecoration(
                   color: Colors.orange.shade600,
                   borderRadius: BorderRadius.circular(12 * s),
@@ -105,13 +120,13 @@ class MainDashboardScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.local_fire_department,
-                        size: 18 * s, color: Colors.white),
-                    SizedBox(width: 3 * s),
+                        size: 16 * s, color: Colors.white),
+                    SizedBox(width: 4 * s),
                     Text('3 días',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12 * s)),
+                            fontSize: 11 * s)),
                   ],
                 ),
               ),
@@ -421,7 +436,6 @@ class MainDashboardScreen extends StatelessWidget {
       ),
       floatingActionButton: Stack(
         children: [
-          // BOTÓN DE CRISIS (Posición inferior izquierda)
           Positioned(
             left: 30 * s,
             bottom: 0,
@@ -430,8 +444,6 @@ class MainDashboardScreen extends StatelessWidget {
               child: _buildCrisisButton(context, s),
             ),
           ),
-
-          // BOTÓN DE DIARIO IA (Posición inferior derecha - por defecto)
           Positioned(
             right: 0,
             bottom: 0,
