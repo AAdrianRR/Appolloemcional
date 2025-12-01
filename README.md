@@ -7,7 +7,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-Backend-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![Gemini AI](https://img.shields.io/badge/AI-Gemini%20Flash-8E75B2?style=for-the-badge&logo=google&logoColor=white)
 
-**ApoIA** es una aplicación móvil desarrollada en Flutter diseñada para brindar apoyo emocional accesible, inmediato y personalizado. Utiliza la inteligencia artificial de **Google Gemini** para ofrecer conversaciones empáticas, herramientas de manejo de crisis y módulos educativos sobre salud mental.
+**Gaibu** es una aplicación móvil desarrollada en Flutter diseñada para brindar apoyo emocional accesible, inmediato y personalizado. Utiliza la inteligencia artificial de **Google Gemini** para ofrecer conversaciones empáticas, herramientas de manejo de crisis y módulos educativos sobre salud mental.
 
 > 🚧 **Estado del Proyecto:** En desarrollo activo (v1.0.0)
 
